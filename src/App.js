@@ -19,7 +19,7 @@ function App() {
 
     const getAnalyticsBetweenRange = async () => {
         setLoader(true);
-        const getsample = await axiosInstance('single-note', {
+        const getsample = await axiosInstance('find-analytic', {
             params: {
                 min: selectedMinDate,
                 max: selectedMaxDate
