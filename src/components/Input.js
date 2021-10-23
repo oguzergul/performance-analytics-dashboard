@@ -10,7 +10,7 @@ const Input = ({type, value, onChange}) => {
         )
     }
 
-    return (<input type={type} onChange={onChange} value={value} className={inputStyle(type)}/>)
+    return (<input data-testid="input" type={type} onChange={onChange} value={value} className={inputStyle(type)}/>)
 }
 
 export default Input

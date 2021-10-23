@@ -1,9 +1,6 @@
-import Flex from "./global/Flex";
-import Text from "./global/Text";
-import Input from "./global/Input";
-import Button from "./global/Button";
+import { Flex, Text, Input, Button} from '../components'
 
-const TimeBlock = ({getFromTime, getToTime,onDateSubmit}) => {
+const TimeBlock = ({getFromTime, getToTime, onDateSubmit}) => {
     return (
         <div className="my-8">
             <Flex className={'mx-auto'} layouts={['col', 'col', 'col', 'row']}>
@@ -15,7 +12,7 @@ const TimeBlock = ({getFromTime, getToTime,onDateSubmit}) => {
 
                     <Flex layouts={['col']} className={'sm:ml-0 lg:ml-2 sm:mt-0 mt-4'}>
                         <Text type={'label'} tag={'label'}>To Time</Text>
-                        <Input type={'datetime-local'} onChange={getToTime}/>
+                        <Input data-testid="datetime" type={'datetime-local'} onChange={getToTime}/>
                     </Flex>
                     <Button onClick={onDateSubmit} name={'Get Analytics'}/>
 

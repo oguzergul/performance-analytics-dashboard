@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {Card, Container, Flex, Grid, Header, Text, TimeBlock} from "./components";
 import {axiosInstance} from "./utils/axios";
-import Chart from "./components/global/Chart";
+import Chart from "./components/Chart";
 
 function App() {
     const [analytics, setAnalytics] = useState([]);

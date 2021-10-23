@@ -1,5 +1,5 @@
 import {Line} from 'react-chartjs-2';
-import {LoadingIndicator} from "../index";
+import {LoadingIndicator} from "./index";
 
 
 const DataChart = ({type = "line", label, dataSet = [], labels , border, background, loading = false}) => {
