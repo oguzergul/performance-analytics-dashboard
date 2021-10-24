@@ -2,6 +2,7 @@ const Flex = ({layouts = [], align = [], justify = [], children, className}) => 
     return (
         <div className={[`
         flex
+        flex-1
         flex-${layouts[0]}
         sm:flex-${layouts[1]} 
         md:flex-${layouts[2]} 
