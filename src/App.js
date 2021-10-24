@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Card, Container, Flex, Grid, Header, Text, TimeBlock} from "./components";
 import {axiosInstance} from "./utils/axios";
 import Chart from "./components/Chart";
@@ -20,17 +20,35 @@ function App() {
 
     const getAnalyticsBetweenRange = async () => {
         setLoader(true);
-        const getsample = await axiosInstance('find-performance', {
+        await axiosInstance('/find-performance', {
             params: {
                 min: selectedMinDate,
                 max: selectedMaxDate
             }
-        }).then(res => res.data)
-            .catch(e => console.log(e))
-            .finally(() => setLoader(false));
-        console.log(getsample)
-        setAnalytics(getsample);
+        }).then(response => {
+            setAnalytics(response.data);
+        }).catch(err => {
+            console.log(err)
+        }).finally(() => {
+            setLoader(false)
+        });
+
+
     };
+
+    const getLastHalfHoursMetrics = async () => {
+        setLoader(true);
+        await axiosInstance('/').then(res => setAnalytics(res.data)).catch(err => {
+            console.log(err)
+        }).finally(() => {
+            setLoader(false)
+        });
+
+    };
+
+    useEffect(() => {
+        getLastHalfHoursMetrics();
+    }, [])
 
     return (
         <div>
