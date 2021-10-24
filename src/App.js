@@ -13,13 +13,14 @@ function App() {
     const getMinSelectedDate = (event) => {
         setSelectedMinDate(event.target.value);
     }
+
     const getMaxSelectedDate = (event) => {
         setSelectedMaxDate(event.target.value);
     }
 
     const getAnalyticsBetweenRange = async () => {
         setLoader(true);
-        const getsample = await axiosInstance('find-analytic', {
+        const getsample = await axiosInstance('find-performance', {
             params: {
                 min: selectedMinDate,
                 max: selectedMaxDate
