@@ -4,7 +4,6 @@ export {default as Flex} from './Flex';
 export {default as Footer} from './Footer';
 export {default as Header} from './Header';
 export {default as LoadingIndicator} from './LoadingIndicator';
-export {default as FolderItem} from './FolderItem';
 export {default as TimeBlock} from './TimeBlock';
 export {default as Grid} from './Grid';
 export {default as Card} from './Card';
