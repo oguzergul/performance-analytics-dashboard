@@ -42,7 +42,6 @@ function App() {
         setLoader(true);
         await axiosInstance('/').then(res => {
             setAnalytics(res.data);
-            console.log('res', res)
         }).catch(err => {
             console.log(err)
         }).finally(() => {
