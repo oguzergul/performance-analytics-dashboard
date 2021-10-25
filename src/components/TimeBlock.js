@@ -15,7 +15,6 @@ const TimeBlock = ({getFromTime, getToTime, onDateSubmit}) => {
                         <Input data-testid="datetime" type={'datetime-local'} onChange={getToTime}/>
                     </Flex>
                     <Button onClick={onDateSubmit} name={'Get Analytics'}/>
-
                 </Flex>
             </Flex>
         </div>

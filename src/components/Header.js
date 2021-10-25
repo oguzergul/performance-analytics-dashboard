@@ -1,7 +1,5 @@
 import React from "react";
-import Container from "./Container";
-import Flex from "./Flex";
-import Text from "./Text";
+import {Container, Flex, Text} from "../components"
 
 const Header = () => {
     return (
