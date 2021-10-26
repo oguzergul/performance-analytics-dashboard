@@ -2,13 +2,15 @@ import {useEffect, useState} from "react";
 import {Card, Container, Flex, Link, Grid, Header, Text, TimeBlock, Footer, Modal, Chart} from "./components";
 import {axiosInstance} from "./utils/axios";
 import useModal from "./hooks/useModal";
-import moment from "moment";
+import {parseDates} from "./helpers/date";
 
 function App() {
     const [selectedMinDate, setSelectedMinDate] = useState("");
     const [selectedMaxDate, setSelectedMaxDate] = useState("");
+
     const [currentReport, setCurrentReport] = useState(0);
     const [analytics, setAnalytics] = useState([]);
+
     const [loader, setLoader] = useState(false);
 
     const {toggleModel, isVisible, modalBody} = useModal();
@@ -40,7 +42,6 @@ function App() {
                 } else {
                     setAnalytics(response.data);
                 }
-
             }).catch(err => {
                 console.log(err)
             }).finally(() => {
@@ -49,7 +50,7 @@ function App() {
         } else {
             toggleModel({
                 title: "Opps!",
-                description: "Please be sure you select dates!"
+                description: "Date selection is required for specific date records!"
             });
             setLoader(false);
         }
@@ -71,19 +72,19 @@ function App() {
     }, [])
 
     const createChart = (data = []) => {
-        const labels = data.map((e) => moment(e.measurement_date).format('L'));
+        const labels = data.map((e) => parseDates(e.measurement_date));
         return [
-            {title: 'TTFB', data: data.map((e) => e.ttfbTime), label: labels},
-            {title: 'FCP', data: data.map((e) => e.fcpTime), label: labels},
-            {title: 'DOM LOAD TIME', data: data.map((e) => e.domLoadTime), label: labels},
-            {title: 'WINDOW LOAD TIME', data: data.map((e) => e.windowLoadTime), label: labels},
+            {title: 'TTFB', set: data.map((e) => e.ttfbTime), labels},
+            {title: 'FCP', set: data.map((e) => e.fcpTime), labels},
+            {title: 'DOM LOAD TIME', set: data.map((e) => e.domLoadTime), labels},
+            {title: 'WINDOW LOAD TIME', set: data.map((e) => e.windowLoadTime), labels},
         ]
     }
     const currentReportData = () => {
         const {measurement_date, user_agent, url, resourcesLoadTime, files} = analytics[currentReport];
 
         return [
-            {title: 'Report Date', value: moment(measurement_date).format("L")},
+            {title: 'Report Date', value: parseDates(measurement_date)},
             {title: 'User Agent', value: user_agent},
             {title: 'Report Url', value: url},
             {title: 'Resources Load Time', value: `${files.length} file-${resourcesLoadTime}ms`}
@@ -96,8 +97,7 @@ function App() {
             <Container>
 
                 <Modal
-                    title={modalBody.title}
-                    description={modalBody.description}
+                    content={modalBody}
                     onClose={toggleModel}
                     show={isVisible}
                 />
@@ -111,21 +111,11 @@ function App() {
 
                 {analytics.length > 0 ?
                     <Grid lg={2} sm={1} direction={'cols'} gap={4}>
-                        {createChart(analytics).map((e, index) =>
+                        {createChart(analytics).map((report, index) =>
                             <Card key={index}>
-                                <Flex
-                                    layouts={['col', 'col', 'col', 'col']}
-                                    justify={['center', 'center', 'center', 'center']}
-                                    align={['center', 'center', 'center', 'center']}>
-                                    <Text tag='h2' type='cardTitle'>{e.title}</Text>
-                                    <Chart
-                                        loading={loader}
-                                        type={'line'}
-                                        border={'#000000'}
-                                        background={'#009aff'}
-                                        label={""}
-                                        dataSet={e.data}
-                                        labels={e.label}>
+                                <Flex layouts={['col', 'col', 'col', 'col']} justify={['center', 'center', 'center', 'center']} align={['center', 'center', 'center', 'center']}>
+                                    <Text tag='h2' type='cardTitle'>{report.title}</Text>
+                                    <Chart loading={loader} type={'line'} border={'#000000'} background={'#009aff'} label={"ms"} dataList={report}>
                                     </Chart>
                                 </Flex>
                             </Card>)
@@ -134,10 +124,10 @@ function App() {
                             <Card>
                                 <Text tag="h2" type="cardTitle">Report Summary</Text>
 
-                                {currentReportData()?.map((e, index) =>
+                                {currentReportData()?.map((report, index) =>
                                     <Grid key={index} direction={'cols'} gap={1} lg={2} sm={1}>
-                                        <Text tag="p" type="label">{e.title}</Text>
-                                        <Text tag="p" type="regular">{e.value}</Text>
+                                        <Text tag="p" type="label">{report.title}</Text>
+                                        <Text tag="p" type="regular">{report.value}</Text>
                                     </Grid>
                                 )}
                             </Card>
@@ -148,17 +138,20 @@ function App() {
                                 leftDisabled={currentReport === 0}
                                 onNext={() => setCurrentReport(currentReport + 1)}
                                 onPrev={() => setCurrentReport(currentReport - 1)}
-                                date={moment(analytics[currentReport]?.measurement_date).format("L")}>
+                                date={parseDates(analytics[currentReport]?.measurement_date)}>
                             </Footer>
 
                         </div>
                     </Grid>
                     :
                     <Card>
-                        <Flex layouts={['col', 'col', 'col', 'col']} justify={['center', 'center', 'center', 'center']} align={['center', 'center', 'center', 'center']}>
+                        <Flex layouts={['col', 'col', 'col', 'col']} justify={['center', 'center', 'center', 'center']}
+                              align={['center', 'center', 'center', 'center']}>
                             <Text tag='span' type="cardTitle">Currently there is no performance measurement.</Text>
-                            <Text tag='span' type="cardTitle">Please visit link below or search for specific dates using time picker.</Text>
-                            <Link target={"_blank"} href={"https://performance-test-app.vercel.app/"}>VISIT TEST APP</Link>
+                            <Text tag='span' type="cardTitle">Please visit link below or search for specific dates using
+                                time picker.</Text>
+                            <Link target={"_blank"} href={"https://performance-test-app.vercel.app/"}>VISIT TEST
+                                APP</Link>
                         </Flex>
                     </Card>
                 }
